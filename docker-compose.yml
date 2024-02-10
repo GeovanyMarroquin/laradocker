@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  phpLamp:
+    build: ubuntuphp/.
+    image: ubuntuphp:v1
+    ports:
+      - "9090:9090"
+      - "9091:9091"
+      - "5173:5173"
+    volumes:
+      - /home/eren/projects/:/var/www/html
+    networks:
+      - laradocknetwork
+    stdin_open: 
+      true
+    tty: 
+      true
+  
+  mariaDB:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravelUser
+      MYSQL_PASSWORD: "laraPa$$word"
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./dev/mariadb:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - laradocknetwork
+    stdin_open: 
+      true
+    tty: 
+      true
+    depends_on:
+      - phpLamp
+
+networks:
+  laradocknetwork:
